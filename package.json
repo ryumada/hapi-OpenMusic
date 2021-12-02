@@ -1,0 +1,33 @@
+{
+  "name": "hapi-openmusic",
+  "version": "1.0.0",
+  "description": "Music Library API using Hapi framework",
+  "main": "src/server.js",
+  "scripts": {
+    "start-prod": "NODE_ENV=production node ./src/server.js",
+    "start-dev": "nodemon ./src/server.js",
+    "lint": "eslint ./src",
+    "migrate": "node-pg-migrate"
+  },
+  "keywords": [
+    "backend",
+    "api",
+    "rest-api",
+    "hapi"
+  ],
+  "author": "ryumada",
+  "license": "ISC",
+  "dependencies": {
+    "@hapi/hapi": "^20.2.1",
+    "dotenv": "^10.0.0",
+    "joi": "^17.4.3",
+    "nanoid": "^3.1.30",
+    "node-pg-migrate": "^6.0.0",
+    "pg": "^8.7.1"
+  },
+  "devDependencies": {
+    "eslint": "^8.3.0",
+    "eslint-config-google": "^0.14.0",
+    "nodemon": "^2.0.15"
+  }
+}
