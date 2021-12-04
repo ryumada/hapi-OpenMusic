@@ -1,4 +1,8 @@
 /* eslint-disable camelcase */
+/**
+ * remember you need to use underscore instead of using camelCase
+ * this is used to create the name of the table attribute
+ */
 
 exports.up = (pgm) => {
   pgm.createTable('songs', {
@@ -26,11 +30,11 @@ exports.up = (pgm) => {
       type: 'SMALLINT',
       notNull: true,
     },
-    createdAt: {
+    inserted_at: {
       type: 'TIMESTAMP',
       notNull: true,
     },
-    updatedAt: {
+    updated_at: {
       type: 'TIMESTAMP',
       notNull: true,
     },

@@ -17,5 +17,5 @@ Database engine &nbsp;&nbsp; : PostgreSQL
 | 4.  | performer     | VARCHAR(128) | NOT NULL    |
 | 5.  | genre         | VARCHAR(32)  | NOT NULL    |
 | 6.  | duration      | SMALLINT()   | NOT NULL    |
-| 7.  | createdAt     | TIMESTAMPT() | NOT NULL    |
-| 8.  | updatedAt     | TIMESTAMPT() | NOT NULL    |
+| 7.  | inserted_at   | TIMESTAMPT() | NOT NULL    |
+| 8.  | updated_at    | TIMESTAMPT() | NOT NULL    |
