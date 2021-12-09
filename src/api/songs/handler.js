@@ -1,5 +1,3 @@
-const ClientError = require('../../errors/ClientError');
-
 /**
  * A class to handle songs api
  */
@@ -12,7 +10,7 @@ class SongsHandler {
     this._service = service;
     this._validator = validator;
 
-    // TODO bind @param {object} this global variable
+    // INFO bind @param {object} this global variable
     this.postSongHandler = this.postSongHandler.bind(this);
     this.getSongsHandler = this.getSongsHandler.bind(this);
     this.getSongByIdHandler = this.getSongByIdHandler.bind(this);
@@ -22,14 +20,14 @@ class SongsHandler {
 
   /**
    * A handler function to handle song adding to the API
-   * @param {object} request from hapi to take payload from client
+   * @param {object} request.payload from hapi to take payload from client
    * @param {object} h from hapi to create response
    * @return {object} send response to client
    */
-  async postSongHandler(request, h) {
+  async postSongHandler({payload}, h) {
     try {
-      this._validator.validateSongPayload(request.payload);
-      const {title, year, performer, genre, duration} = request.payload;
+      this._validator.validateSongPayload(payload);
+      const {title, year, performer, genre, duration} = payload;
       const songId = await this._service.addSong({
         title, year, performer, genre, duration,
       });
@@ -44,23 +42,7 @@ class SongsHandler {
       response.code(201);
       return response;
     } catch (error) {
-      if (error instanceof ClientError) {
-        const response = h.response({
-          status: 'fail',
-          message: error.message,
-        });
-        response.code(error.statusCode);
-        return response;
-      }
-
-      // SERVER ERROR
-      const response = h.response({
-        status: 'error',
-        message: 'Maaf terjadi masalah pada server kami',
-      });
-      response.code(500);
-      console.error(error); // tampilkan log error server
-      return response;
+      return error;
     }
   }
 
@@ -82,13 +64,13 @@ class SongsHandler {
 
   /**
    * A handler function to handle getting song item by id
-   * @param {object} request from hapi to take payload from client
+   * @param {object} request.params from hapi to take payload from client
    * @param {object} h from hapi to create response
    * @return {object} send response to client
    */
-  async getSongByIdHandler(request, h) {
+  async getSongByIdHandler({params}, h) {
     try {
-      const {id} = request.params;
+      const {id} = params;
 
       const song = await this._service.getSongById(id);
 
@@ -99,23 +81,8 @@ class SongsHandler {
         },
       };
     } catch (error) {
-      if (error instanceof ClientError) {
-        const response = h.response({
-          status: 'fail',
-          message: error.message,
-        });
-        response.code(error.statusCode);
-        return response;
-      }
-
-      // SERVER ERROR
-      const response = h.response({
-        status: 'error',
-        message: 'Maaf terjadi kesalahan pada server kami',
-      });
-      response.code(500);
-      console.error(error); // tampilkan log error server
-      return response;
+      // kembalikan error biar diproses sama server.ext 'onPreResponse'
+      return error;
     }
   }
 
@@ -137,35 +104,20 @@ class SongsHandler {
         message: 'Lagu berhasil diperbarui',
       };
     } catch (error) {
-      if (error instanceof ClientError) {
-        const response = h.response({
-          status: 'fail',
-          message: error.message,
-        });
-        response.code(error.statusCode);
-        return response;
-      }
-
-      // SERVER ERROR
-      const response = h.response({
-        status: 'error',
-        message: 'Maaf terjadi masalah pada server kami',
-      });
-      response.code(500);
-      console.error(error);
-      return response;
+      // kembalikan error biar diproses sama server.ext 'onPreResponse'
+      return error;
     }
   }
 
   /**
    * A handler function to delete a song by using id requested
-   * @param {object} request from hapi to take payload from client
+   * @param {object} request.params from hapi to take payload from client
    * @param {object} h from hapi to create response
    * @return {object} send response to client
    */
-  async deleteSongByIdHandler(request, h) {
+  async deleteSongByIdHandler({params}, h) {
     try {
-      const {id} = request.params;
+      const {id} = params;
 
       await this._service.deleteSongById(id);
 
@@ -174,23 +126,8 @@ class SongsHandler {
         message: 'Lagu berhasil dihapus',
       };
     } catch (error) {
-      if (error instanceof ClientError) {
-        const response = h.response({
-          status: 'fail',
-          message: error.message,
-        });
-        response.code(error.statusCode);
-        return response;
-      }
-
-      // SERVER ERROR
-      const response = h.response({
-        status: 'error',
-        message: 'Maaf terjadi masalah pada server kami',
-      });
-      response.code(500);
-      console.error(error);
-      return response;
+      // kembalikan error biar diproses sama server.ext 'onPreResponse'
+      return error;
     }
   }
 }
