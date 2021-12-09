@@ -12,7 +12,7 @@ class SongsHandler {
     this._service = service;
     this._validator = validator;
 
-    // TODO bind @param {object} this global variable
+    // INFO bind @param {object} this global variable
     this.postSongHandler = this.postSongHandler.bind(this);
     this.getSongsHandler = this.getSongsHandler.bind(this);
     this.getSongByIdHandler = this.getSongByIdHandler.bind(this);
@@ -22,14 +22,14 @@ class SongsHandler {
 
   /**
    * A handler function to handle song adding to the API
-   * @param {object} request from hapi to take payload from client
+   * @param {object} request.payload from hapi to take payload from client
    * @param {object} h from hapi to create response
    * @return {object} send response to client
    */
-  async postSongHandler(request, h) {
+  async postSongHandler({payload}, h) {
     try {
-      this._validator.validateSongPayload(request.payload);
-      const {title, year, performer, genre, duration} = request.payload;
+      this._validator.validateSongPayload(payload);
+      const {title, year, performer, genre, duration} = payload;
       const songId = await this._service.addSong({
         title, year, performer, genre, duration,
       });
@@ -82,13 +82,13 @@ class SongsHandler {
 
   /**
    * A handler function to handle getting song item by id
-   * @param {object} request from hapi to take payload from client
+   * @param {object} request.params from hapi to take payload from client
    * @param {object} h from hapi to create response
    * @return {object} send response to client
    */
-  async getSongByIdHandler(request, h) {
+  async getSongByIdHandler({params}, h) {
     try {
-      const {id} = request.params;
+      const {id} = params;
 
       const song = await this._service.getSongById(id);
 
@@ -159,13 +159,13 @@ class SongsHandler {
 
   /**
    * A handler function to delete a song by using id requested
-   * @param {object} request from hapi to take payload from client
+   * @param {object} request.params from hapi to take payload from client
    * @param {object} h from hapi to create response
    * @return {object} send response to client
    */
-  async deleteSongByIdHandler(request, h) {
+  async deleteSongByIdHandler({params}, h) {
     try {
-      const {id} = request.params;
+      const {id} = params;
 
       await this._service.deleteSongById(id);
 
