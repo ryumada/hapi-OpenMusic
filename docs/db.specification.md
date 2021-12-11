@@ -35,11 +35,6 @@ Database engine &nbsp;&nbsp; : PostgreSQL
 // INFO
 - id: "user-Qbax5Oy7L8WKf74l"
 
-// TODO validasi users
-- user min(3).max(64) karakter
-- password min(13)
-- fullname min(3).max(128) karakter
-
 ## playlists
 | No. | Nama Properti | Tipe Data    | Ketentuan                       |
 |-----|---------------|--------------|---------------------------------|
