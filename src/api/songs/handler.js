@@ -42,6 +42,7 @@ class SongsHandler {
       response.code(201);
       return response;
     } catch (error) {
+      // kembalikan error biar diproses sama server.ext 'onPreResponse'
       return error;
     }
   }
