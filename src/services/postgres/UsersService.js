@@ -2,6 +2,8 @@ const {nanoid} = require('nanoid');
 const {Pool} = require('pg');
 const bcrypt = require('bcrypt');
 const InvariantError = require('../../errors/InvariantError');
+const AuthenticationError = require('../../errors/AuthenticationError');
+const { exist } = require('joi');
 
 /**
  * A class to manage users
@@ -64,6 +66,36 @@ class UsersService {
           'Gagal menambahkan user. Username telah digunakan',
       );
     }
+  }
+
+  /**
+   * A function to verify user credentials
+   * @param {string} username of the user to login destructured from payload
+   * @param {string} password of the user to login destructured from payload
+   * @return {id/AuthenticationError} id of the user or AuthenticationsError
+   */
+  async verifyUserCredentials(username, password) {
+    const messageCredentialError = 'Kredensial yang anda berikan salah';
+
+    const query = {
+      text: 'SELECT id, password FROM users WHERE username = $1',
+      values: [username],
+    };
+
+    const result = await this._pool.query(query);
+
+    if (!result.rowCount) {
+      throw new AuthenticationError(messageCredentialError);
+    }
+
+    const {id, password: hashedPassword} = result.rows[0];
+
+    const match = await bcrypt.compare(password, hashedPassword);
+    if (!match) {
+      throw new AuthenticationError(messageCredentialError);
+    }
+
+    return id;
   }
 }
 
