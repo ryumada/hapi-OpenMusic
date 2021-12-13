@@ -110,6 +110,22 @@ class SongsService {
       throw new NotFoundError('Lagu gagal dihapus. Id tidak ditemukan');
     }
   }
+
+  /**
+   * A function to see if the song exist in the database
+   * @param {string} songId id of the song to be looked up
+   */
+  async verifySongExistence(songId) {
+    const query = {
+      text: 'SELECT id FROM songs WHERE id = $1',
+      values: [songId],
+    };
+    const result = await this._pool.query(query);
+
+    if (!result.rowCount) {
+      throw new NotFoundError('Lagu tidak ditemukan.');
+    }
+  }
 }
 
 module.exports = SongsService;

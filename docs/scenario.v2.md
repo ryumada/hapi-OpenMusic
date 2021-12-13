@@ -1,6 +1,6 @@
 - [Skenario 1: Terdapat fitur registrasi pengguna (Menambahkan user)](#skenario-1-terdapat-fitur-registrasi-pengguna-menambahkan-user)
 - [Skenario 2: Terdapat fitur login pengguna (menambahkan authentication)](#skenario-2-terdapat-fitur-login-pengguna-menambahkan-authentication)
-- [Skenario 3: Terdapat fitur regresh access token (memperbarui authentication)](#skenario-3-terdapat-fitur-regresh-access-token-memperbarui-authentication)
+- [Skenario 3: Terdapat fitur refresh access token (memperbarui authentication)](#skenario-3-terdapat-fitur-refresh-access-token-memperbarui-authentication)
 - [Skenario 4: Terdapat fitur logout (menghapus authentication)](#skenario-4-terdapat-fitur-logout-menghapus-authentication)
 - [Skenario 5: Terdapat fitur menambahkan playlist](#skenario-5-terdapat-fitur-menambahkan-playlist)
 - [Skenario 6: Terdapat fitur melihat daftar playlist yang dimiliki](#skenario-6-terdapat-fitur-melihat-daftar-playlist-yang-dimiliki)
@@ -80,7 +80,7 @@
     }
   }
   ```
-## Skenario 3: Terdapat fitur regresh access token (memperbarui authentication)
+## Skenario 3: Terdapat fitur refresh access token (memperbarui authentication)
 - request header:
   - method: **PUT**
   - url: **/authentications**
