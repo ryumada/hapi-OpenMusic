@@ -22,11 +22,16 @@ const AuthenticationsService = require(
 );
 const TokenManager = require('./tokenize/TokenManager');
 const AuthenticationsValidator = require('./validator/authentications');
+// playlists
+const playlists = require('./api/playlists');
+const PlaylistsService = require('./services/postgres/PlaylistsService');
+const PlaylistsValidator = require('./validator/playlists');
 
 const init = async () => {
   const songsService = new SongsService();
   const usersService = new UsersService();
   const authenticationsService = new AuthenticationsService();
+  const playlistsService = new PlaylistsService();
 
   const server = Hapi.server({
     port: process.env.PORT,
@@ -86,6 +91,14 @@ const init = async () => {
         validator: AuthenticationsValidator,
       },
     },
+    {
+      plugin: playlists,
+      options: {
+        playlistsService,
+        songsService,
+        validator: PlaylistsValidator,
+      },
+    },
   ]);
 
   server.ext('onPreResponse', (request, h) => {
@@ -104,11 +117,16 @@ const init = async () => {
       newResponse.code(response.statusCode);
       return newResponse;
     } else if (response instanceof Error) { // SERVER ERROR
+      const {output: {statusCode}} = response;
       const newResponse = h.response({
         status: 'error',
-        message: 'Maaf terjadi masalah pada server kami',
+        message: (statusCode && statusCode == 401) ?
+        'Silakan login untuk mendapatkan akses ke resource ini' :
+        'Maaf terjadi masalah pada server kami',
       });
-      newResponse.code(500);
+      newResponse.code(
+        (statusCode) ? response.output.statusCode : 500,
+      );
       console.error(response); // tampilkan log error server
       return newResponse;
     }
