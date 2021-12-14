@@ -117,7 +117,7 @@ class PlaylistsHandler {
 
       await this
           ._playlistsService
-          .verifyPlaylistOwner(playlistId, credentialId);
+          .verifyPlaylistAccess(playlistId, credentialId);
       await this._songsService.verifySongExistence(songId);
       await this._playlistsService.verifySongExistence(playlistId, songId);
       const playlistsongsId = await this
@@ -151,7 +151,7 @@ class PlaylistsHandler {
       const {playlistId} = request.params;
 
       await this._playlistsService
-          .verifyPlaylistOwner(playlistId, credentialId);
+          .verifyPlaylistAccess(playlistId, credentialId);
       const songs = await this._playlistsService
           .getSongsInPlaylist(playlistId);
 
@@ -180,7 +180,7 @@ class PlaylistsHandler {
       const {playlistId} = request.params;
 
       await this._playlistsService
-          .verifyPlaylistOwner(playlistId, credentialId);
+          .verifyPlaylistAccess(playlistId, credentialId);
       await this._playlistsService.verifySongExistence(
           playlistId, songId, true,
       );
