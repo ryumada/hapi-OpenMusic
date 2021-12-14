@@ -8,7 +8,7 @@ const InvariantError = require('../../errors/InvariantError');
 const PlaylistsValidator = {
   validatePostPlaylistPayload: (payload) => {
     const validationResult = PostPlaylistPayloadSchema.validate(payload);
-    if (validationResult.errosongsServicer) {
+    if (validationResult.error) {
       throw new InvariantError(validationResult.error.message);
     }
   },
