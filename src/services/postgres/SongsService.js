@@ -2,7 +2,7 @@ const {Pool} = require('pg');
 const {nanoid} = require('nanoid');
 const InvariantError = require('../../errors/InvariantError');
 const NotFoundError = require('../../errors/NotFoundError');
-const {mapDBToModel, mapSomeDBToModel} = require('../../utils');
+const {mapDBToModel} = require('../../utils');
 
 /**
  * A class to manage song service in open music app
@@ -51,7 +51,7 @@ class SongsService {
     const result = await this._pool.query(
         'SELECT id, title, performer FROM songs',
     );
-    return result.rows.map(mapSomeDBToModel);
+    return result.rows;
   }
 
   /**
