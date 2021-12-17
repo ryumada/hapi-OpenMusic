@@ -25,26 +25,21 @@ class SongsHandler {
    * @return {object} send response to client
    */
   async postSongHandler({payload}, h) {
-    try {
-      this._validator.validateSongPayload(payload);
-      const {title, year, performer, genre, duration} = payload;
-      const songId = await this._service.addSong({
-        title, year, performer, genre, duration,
-      });
+    this._validator.validateSongPayload(payload);
+    const {title, year, performer, genre, duration} = payload;
+    const songId = await this._service.addSong({
+      title, year, performer, genre, duration,
+    });
 
-      const response = h.response({
-        status: 'success',
-        message: 'Lagu berhasil ditambahkan',
-        data: {
-          songId,
-        },
-      });
-      response.code(201);
-      return response;
-    } catch (error) {
-      // kembalikan error biar diproses sama server.ext 'onPreResponse'
-      return error;
-    }
+    const response = h.response({
+      status: 'success',
+      message: 'Lagu berhasil ditambahkan',
+      data: {
+        songId,
+      },
+    });
+    response.code(201);
+    return response;
   }
 
   /**
@@ -70,21 +65,16 @@ class SongsHandler {
    * @return {object} send response to client
    */
   async getSongByIdHandler({params}, h) {
-    try {
-      const {id} = params;
+    const {id} = params;
 
-      const song = await this._service.getSongById(id);
+    const song = await this._service.getSongById(id);
 
-      return {
-        status: 'success',
-        data: {
-          song,
-        },
-      };
-    } catch (error) {
-      // kembalikan error biar diproses sama server.ext 'onPreResponse'
-      return error;
-    }
+    return {
+      status: 'success',
+      data: {
+        song,
+      },
+    };
   }
 
   /**
@@ -94,20 +84,15 @@ class SongsHandler {
    * @return {object} send response to client
    */
   async putSongByIdHandler(request, h) {
-    try {
-      this._validator.validateSongPayload(request.payload);
-      const {id} = request.params;
+    this._validator.validateSongPayload(request.payload);
+    const {id} = request.params;
 
-      await this._service.editSongById(id, request.payload);
+    await this._service.editSongById(id, request.payload);
 
-      return {
-        status: 'success',
-        message: 'Lagu berhasil diperbarui',
-      };
-    } catch (error) {
-      // kembalikan error biar diproses sama server.ext 'onPreResponse'
-      return error;
-    }
+    return {
+      status: 'success',
+      message: 'Lagu berhasil diperbarui',
+    };
   }
 
   /**
@@ -117,19 +102,14 @@ class SongsHandler {
    * @return {object} send response to client
    */
   async deleteSongByIdHandler({params}, h) {
-    try {
-      const {id} = params;
+    const {id} = params;
 
-      await this._service.deleteSongById(id);
+    await this._service.deleteSongById(id);
 
-      return {
-        status: 'success',
-        message: 'Lagu berhasil dihapus',
-      };
-    } catch (error) {
-      // kembalikan error biar diproses sama server.ext 'onPreResponse'
-      return error;
-    }
+    return {
+      status: 'success',
+      message: 'Lagu berhasil dihapus',
+    };
   }
 }
 

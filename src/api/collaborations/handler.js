@@ -24,29 +24,24 @@ class CollaborationsHandler {
    * @return {response/error}
    */
   async postCollaborationHandler(request, h) {
-    try {
-      this._validator.validateCollaborationPayload(request.payload);
-      const {id: credentialId} = request.auth.credentials;
-      const {playlistId, userId} = request.payload;
+    this._validator.validateCollaborationPayload(request.payload);
+    const {id: credentialId} = request.auth.credentials;
+    const {playlistId, userId} = request.payload;
 
-      await this._playlistsService
-          .verifyPlaylistAccess(playlistId, credentialId);
-      const collaborationId = await this._collaborationsService
-          .addCollaboration(playlistId, userId);
+    await this._playlistsService
+        .verifyPlaylistAccess(playlistId, credentialId);
+    const collaborationId = await this._collaborationsService
+        .addCollaboration(playlistId, userId);
 
-      const response = h.response({
-        status: 'success',
-        message: 'Kolaborasi berhasil ditambahkan ke playlist terpilih',
-        data: {
-          collaborationId,
-        },
-      });
-      response.code(201);
-      return response;
-    } catch (error) {
-      // kembalikan error biar diproses sama server.ext 'onPreResponse'
-      return error;
-    }
+    const response = h.response({
+      status: 'success',
+      message: 'Kolaborasi berhasil ditambahkan ke playlist terpilih',
+      data: {
+        collaborationId,
+      },
+    });
+    response.code(201);
+    return response;
   }
 
   /**
@@ -55,23 +50,18 @@ class CollaborationsHandler {
    * @return {response/error}
    */
   async deleteCollaborationHandler(request) {
-    try {
-      this._validator.validateCollaborationPayload(request.payload);
-      const {id: credentialId} = request.auth.credentials;
-      const {playlistId, userId} = request.payload;
+    this._validator.validateCollaborationPayload(request.payload);
+    const {id: credentialId} = request.auth.credentials;
+    const {playlistId, userId} = request.payload;
 
-      await this._playlistsService
-          .verifyPlaylistAccess(playlistId, credentialId);
-      await this._collaborationsService.deleteCollaboration(playlistId, userId);
+    await this._playlistsService
+        .verifyPlaylistAccess(playlistId, credentialId);
+    await this._collaborationsService.deleteCollaboration(playlistId, userId);
 
-      return {
-        status: 'success',
-        message: 'Kolaborasi berhasil dihapus',
-      };
-    } catch (error) {
-      // kembalikan error biar diproses sama server.ext 'onPreResponse'
-      return error;
-    }
+    return {
+      status: 'success',
+      message: 'Kolaborasi berhasil dihapus',
+    };
   }
 }
 
