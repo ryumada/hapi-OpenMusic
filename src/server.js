@@ -133,10 +133,14 @@ const init = async () => {
       return newResponse;
     } else if (response instanceof Error) { // SERVER ERROR
       const {output: {statusCode}} = response;
+      const errorMessage = (statusCode && statusCode == 401) ?
+        'Silakan login untuk mendapatkan akses ke resource ini' :
+        undefined;
+
       const newResponse = h.response({
         status: 'error',
-        message: (statusCode && statusCode == 401) ?
-        'Silakan login untuk mendapatkan akses ke resource ini' :
+        message: (errorMessage) ?
+        errorMessage :
         'Maaf terjadi masalah pada server kami',
       });
       newResponse.code(
