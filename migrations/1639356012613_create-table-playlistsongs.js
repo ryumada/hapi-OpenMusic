@@ -3,8 +3,6 @@
  * Conjuction Table used to connect many-to-many relationship tables
  */
 
-exports.shorthands = undefined;
-
 exports.up = (pgm) => {
   pgm.createTable('playlistsongs', {
     id: {

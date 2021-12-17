@@ -31,34 +31,29 @@ class AuthenticationsHandler {
    * @return {h.response/error} if successful / if failed
    */
   async postAuthenticationHandler({payload}, h) {
-    try {
-      await this._validator.validatePostAuthenticationPayload(payload);
+    await this._validator.validatePostAuthenticationPayload(payload);
 
-      const {username, password} = payload;
-      const id = await this._usersService.verifyUserCredentials(
-          username,
-          password,
-      );
+    const {username, password} = payload;
+    const id = await this._usersService.verifyUserCredentials(
+        username,
+        password,
+    );
 
-      const accessToken = this._tokenManager.generateAccessToken({id});
-      const refreshToken = this._tokenManager.generateRefreshToken({id});
+    const accessToken = this._tokenManager.generateAccessToken({id});
+    const refreshToken = this._tokenManager.generateRefreshToken({id});
 
-      await this._authenticationsService.addRefreshToken(refreshToken);
+    await this._authenticationsService.addRefreshToken(refreshToken);
 
-      const response = h.response({
-        status: 'success',
-        message: 'Authentication berhasil ditambahkan',
-        data: {
-          accessToken,
-          refreshToken,
-        },
-      });
-      response.code(201);
-      return response;
-    } catch (error) {
-      // kembalikan error biar diproses sama server.ext 'onPreResponse'
-      return error;
-    }
+    const response = h.response({
+      status: 'success',
+      message: 'Authentication berhasil ditambahkan',
+      data: {
+        accessToken,
+        refreshToken,
+      },
+    });
+    response.code(201);
+    return response;
   }
 
   /**
@@ -67,25 +62,20 @@ class AuthenticationsHandler {
    * @return {response/error} if successful / if failed
    */
   async putAuthenticationHandler({payload}) {
-    try {
-      this._validator.validatePutAuthenticationPayload(payload);
+    this._validator.validatePutAuthenticationPayload(payload);
 
-      const {refreshToken} = payload;
-      await this._authenticationsService.verifyRefreshToken(refreshToken);
-      const {id} = await this._tokenManager.verifyRefreshToken(refreshToken);
+    const {refreshToken} = payload;
+    await this._authenticationsService.verifyRefreshToken(refreshToken);
+    const {id} = await this._tokenManager.verifyRefreshToken(refreshToken);
 
-      const accessToken = this._tokenManager.generateAccessToken({id});
-      return {
-        status: 'success',
-        message: 'Access Token berhasil diperbarui',
-        data: {
-          accessToken,
-        },
-      };
-    } catch (error) {
-      // kembalikan error biar diproses sama server.ext 'onPreResponse'
-      return error;
-    }
+    const accessToken = this._tokenManager.generateAccessToken({id});
+    return {
+      status: 'success',
+      message: 'Access Token berhasil diperbarui',
+      data: {
+        accessToken,
+      },
+    };
   }
 
   /**
@@ -94,21 +84,16 @@ class AuthenticationsHandler {
    * @return {response/error} if successful / if failed
    */
   async deleteAuthenticationHandler({payload}) {
-    try {
-      this._validator.validateDeleteAuthenticationPayload(payload);
+    this._validator.validateDeleteAuthenticationPayload(payload);
 
-      const {refreshToken} = payload;
-      await this._authenticationsService.verifyRefreshToken(refreshToken);
-      await this._authenticationsService.deleteRefreshToken(refreshToken);
+    const {refreshToken} = payload;
+    await this._authenticationsService.verifyRefreshToken(refreshToken);
+    await this._authenticationsService.deleteRefreshToken(refreshToken);
 
-      return {
-        status: 'success',
-        message: 'Refresh Token berhasil dihapus',
-      };
-    } catch (error) {
-      // kembalikan error biar diproses sama server.ext 'onPreResponse'
-      return error;
-    }
+    return {
+      status: 'success',
+      message: 'Refresh Token berhasil dihapus',
+    };
   }
 }
 

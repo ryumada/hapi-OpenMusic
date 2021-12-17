@@ -3,7 +3,6 @@ const {Pool} = require('pg');
 const bcrypt = require('bcrypt');
 const InvariantError = require('../../errors/InvariantError');
 const AuthenticationError = require('../../errors/AuthenticationError');
-const { exist } = require('joi');
 
 /**
  * A class to manage users
@@ -61,7 +60,7 @@ class UsersService {
 
     const result = await this._pool.query(query);
 
-    if (result.rowCount > 0) {
+    if (result.rowCount) {
       throw new InvariantError(
           'Gagal menambahkan user. Username telah digunakan',
       );

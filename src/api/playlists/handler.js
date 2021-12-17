@@ -30,28 +30,23 @@ class PlaylistsHandler {
    * @return {response/error}
    */
   async postPlaylistHandler(request, h) {
-    try {
-      this._validator.validatePostPlaylistPayload(request.payload);
-      const {id: credentialId} = request.auth.credentials;
-      const {name} = request.payload;
+    this._validator.validatePostPlaylistPayload(request.payload);
+    const {id: credentialId} = request.auth.credentials;
+    const {name} = request.payload;
 
-      const playlistId = await this
-          ._playlistsService
-          .addPlaylist(name, credentialId);
+    const playlistId = await this
+        ._playlistsService
+        .addPlaylist(name, credentialId);
 
-      const response = h.response({
-        status: 'success',
-        message: 'Playlist berhasil ditambahkan',
-        data: {
-          playlistId,
-        },
-      });
-      response.code(201);
-      return response;
-    } catch (error) {
-      // kembalikan error biar diproses sama server.ext 'onPreResponse'
-      return error;
-    }
+    const response = h.response({
+      status: 'success',
+      message: 'Playlist berhasil ditambahkan',
+      data: {
+        playlistId,
+      },
+    });
+    response.code(201);
+    return response;
   }
 
   /**
@@ -60,21 +55,16 @@ class PlaylistsHandler {
    * @return {response/error} if successful or fail
    */
   async getPlaylistHandler({auth: {credentials}}) {
-    try {
-      const {id: credentialId} = credentials;
-      const playlists = await this._playlistsService.getPlaylists(credentialId);
+    const {id: credentialId} = credentials;
+    const playlists = await this._playlistsService.getPlaylists(credentialId);
 
-      // kembalikan response dengan default status code yaitu 200
-      return {
-        status: 'success',
-        data: {
-          playlists,
-        },
-      };
-    } catch (error) {
-      // kembalikan error biar diproses sama server.ext 'onPreResponse'
-      return error;
-    }
+    // kembalikan response dengan default status code yaitu 200
+    return {
+      status: 'success',
+      data: {
+        playlists,
+      },
+    };
   }
 
   /**
@@ -83,23 +73,18 @@ class PlaylistsHandler {
    * @return {response/error}
    */
   async deletePlaylist(request) {
-    try {
-      const {playlistId} = request.params;
-      const {id: credentialId} = request.auth.credentials;
+    const {playlistId} = request.params;
+    const {id: credentialId} = request.auth.credentials;
 
-      await this
-          ._playlistsService
-          .verifyPlaylistOwner(playlistId, credentialId);
-      await this._playlistsService.deletePlaylistById(playlistId);
+    await this
+        ._playlistsService
+        .verifyPlaylistOwner(playlistId, credentialId);
+    await this._playlistsService.deletePlaylistById(playlistId);
 
-      return {
-        status: 'success',
-        message: 'Playlist berhasil dihapus',
-      };
-    } catch (error) {
-      // kembalikan error biar diproses sama server.ext 'onPreResponse'
-      return error;
-    }
+    return {
+      status: 'success',
+      message: 'Playlist berhasil dihapus',
+    };
   }
 
   /**
@@ -109,34 +94,29 @@ class PlaylistsHandler {
    * @return {response/error}
    */
   async postSongToPlaylistHandler(request, h) {
-    try {
-      this._validator.validatePostSongToPlaylistPayload(request.payload);
-      const {id: credentialId} = request.auth.credentials;
-      const {songId} = request.payload;
-      const {playlistId} = request.params;
+    this._validator.validatePostSongToPlaylistPayload(request.payload);
+    const {id: credentialId} = request.auth.credentials;
+    const {songId} = request.payload;
+    const {playlistId} = request.params;
 
-      await this
-          ._playlistsService
-          .verifyPlaylistAccess(playlistId, credentialId);
-      await this._songsService.verifySongExistence(songId);
-      await this._playlistsService.verifySongExistence(playlistId, songId);
-      const playlistsongsId = await this
-          ._playlistsService
-          .addSongToPlaylist(playlistId, songId);
+    await this
+        ._playlistsService
+        .verifyPlaylistAccess(playlistId, credentialId);
+    await this._songsService.verifySongExistence(songId);
+    await this._playlistsService.verifySongExistence(playlistId, songId);
+    const playlistsongsId = await this
+        ._playlistsService
+        .addSongToPlaylist(playlistId, songId);
 
-      const response = h.response({
-        status: 'success',
-        message: 'Lagu berhasil ditambahkan ke playlist',
-        data: {
-          playlistsongsId,
-        },
-      });
-      response.code(201);
-      return response;
-    } catch (error) {
-      // kembalikan error biar diproses sama server.ext 'onPreResponse'
-      return error;
-    }
+    const response = h.response({
+      status: 'success',
+      message: 'Lagu berhasil ditambahkan ke playlist',
+      data: {
+        playlistsongsId,
+      },
+    });
+    response.code(201);
+    return response;
   }
 
   /**
@@ -146,25 +126,20 @@ class PlaylistsHandler {
    * @return {response/error}
    */
   async getSongsInPlaylistHandler(request, h) {
-    try {
-      const {id: credentialId} = request.auth.credentials;
-      const {playlistId} = request.params;
+    const {id: credentialId} = request.auth.credentials;
+    const {playlistId} = request.params;
 
-      await this._playlistsService
-          .verifyPlaylistAccess(playlistId, credentialId);
-      const songs = await this._playlistsService
-          .getSongsInPlaylist(playlistId);
+    await this._playlistsService
+        .verifyPlaylistAccess(playlistId, credentialId);
+    const songs = await this._playlistsService
+        .getSongsInPlaylist(playlistId);
 
-      return {
-        status: 'success',
-        data: {
-          songs,
-        },
-      };
-    } catch (error) {
-      // kembalikan error biar diproses sama server.ext 'onPreResponse'
-      return error;
-    }
+    return {
+      status: 'success',
+      data: {
+        songs,
+      },
+    };
   }
 
   /**
@@ -173,28 +148,23 @@ class PlaylistsHandler {
    * @return {response/error}
    */
   async deleteSongInPlaylistHandler(request) {
-    try {
-      this._validator.validateDeleteSongInPlaylistPayload(request.payload);
-      const {id: credentialId} = request.auth.credentials;
-      const {songId} = request.payload;
-      const {playlistId} = request.params;
+    this._validator.validateDeleteSongInPlaylistPayload(request.payload);
+    const {id: credentialId} = request.auth.credentials;
+    const {songId} = request.payload;
+    const {playlistId} = request.params;
 
-      await this._playlistsService
-          .verifyPlaylistAccess(playlistId, credentialId);
-      await this._playlistsService.verifySongExistence(
-          playlistId, songId, true,
-      );
-      await this._playlistsService
-          .deleteSongInPlaylist(playlistId, songId);
+    await this._playlistsService
+        .verifyPlaylistAccess(playlistId, credentialId);
+    await this._playlistsService.verifySongExistence(
+        playlistId, songId, true,
+    );
+    await this._playlistsService
+        .deleteSongInPlaylist(playlistId, songId);
 
-      return {
-        status: 'success',
-        message: 'Lagu berhasil dihapus dari Playlist',
-      };
-    } catch (error) {
-      // kembalikan error biar diproses sama server.ext 'onPreResponse'
-      return error;
-    }
+    return {
+      status: 'success',
+      message: 'Lagu berhasil dihapus dari Playlist',
+    };
   }
 }
 

@@ -21,24 +21,19 @@ class UsersHandler {
    * @return {object} send response to client
    */
   async postUserHandler({payload}, h) {
-    try {
-      this._validator.validateUserPayload(payload);
+    this._validator.validateUserPayload(payload);
 
-      const userId = await this._service.addUser(payload);
+    const userId = await this._service.addUser(payload);
 
-      const response = h.response({
-        status: 'success',
-        message: 'User berhasil ditambahkan, Selamat datang :D',
-        data: {
-          userId,
-        },
-      });
-      response.code(201);
-      return response;
-    } catch (error) {
-      // kembalikan error biar diproses sama server.ext 'onPreResponse'
-      return error;
-    }
+    const response = h.response({
+      status: 'success',
+      message: 'User berhasil ditambahkan, Selamat datang :D',
+      data: {
+        userId,
+      },
+    });
+    response.code(201);
+    return response;
   }
 }
 

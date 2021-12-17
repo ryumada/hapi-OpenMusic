@@ -11,14 +11,4 @@ const mapDBToModel = ({inserted_at, updated_at, ...args}) => ({
   updatedAt: updated_at,
 });
 
-const mapSomeDBToModel = ({
-  id,
-  title,
-  performer,
-}) => ({
-  id,
-  title,
-  performer,
-});
-
-module.exports = {mapDBToModel, mapSomeDBToModel};
+module.exports = {mapDBToModel};
