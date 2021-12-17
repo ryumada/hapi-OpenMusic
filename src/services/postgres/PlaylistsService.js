@@ -141,7 +141,7 @@ class PlaylistsService {
    */
   async verifyPlaylistOwner(playlistId, owner) {
     const query = {
-      text: 'SELECT id, owner FROM playlists WHERE id = $1',
+      text: 'SELECT owner FROM playlists WHERE id = $1',
       values: [playlistId],
     };
     const result = await this._pool.query(query);
