@@ -3,7 +3,7 @@
  */
 class UsersHandler {
   /**
-   * @param {class} service used to access database mode
+   * @param {class} service used to access database model
    * @param {class} validator used to validate user inputs
    */
   constructor(service, validator) {
