@@ -10,12 +10,15 @@ const NotFoundError = require('../../errors/NotFoundError');
 class PlaylistsService {
   /**
    * A constructor function for the class
-   * @param {instance} collaborationsService the instance that needed for
+   * @param {instance} collaborationsService the instance that is needed for
    * verifying the access of playlist
+   * @param {instance} cacheService the instance that is needed for caching
+   * some query results
    */
-  constructor(collaborationsService) {
+  constructor(collaborationsService, cacheService) {
     this._pool = new Pool();
     this._collaborationsService = collaborationsService;
+    this._cacheService = cacheService;
   }
 
   /**
@@ -78,6 +81,8 @@ class PlaylistsService {
       throw new InvariantError('Lagu gagal ditambahkan');
     }
 
+    // menghapus cache dari server redis
+    await this._cacheService.delete(`playlist:${playlistId}`);
     return result.rows[0].id;
   }
 
@@ -87,16 +92,27 @@ class PlaylistsService {
    * @return {object} the list of songs
    */
   async getSongsInPlaylist(playlistId) {
-    const query = {
-      text: `SELECT songs.id, songs.title, songs.performer
-      FROM playlistsongs
-      LEFT JOIN songs ON songs.id = playlistsongs.song_id
-      WHERE playlist_id = $1`,
-      values: [playlistId],
-    };
-    const result = await this._pool.query(query);
+    try {
+      const result = await this._cacheService.get(`playlist:${playlistId}`);
+      return JSON.parse(result);
+    } catch {
+      // bila gagal, diteruskan dengan mendapatkan catatan dari database
+      const query = {
+        text: `SELECT songs.id, songs.title, songs.performer
+        FROM playlistsongs
+        LEFT JOIN songs ON songs.id = playlistsongs.song_id
+        WHERE playlist_id = $1`,
+        values: [playlistId],
+      };
+      const {rows} = await this._pool.query(query);
 
-    return result.rows;
+      // catatan akan disimpan pada cache sebelum fungsi getNotes dikembalikan
+      await this._cacheService.set(
+          `playlist:${playlistId}`,
+          JSON.stringify(rows),
+      );
+      return rows;
+    }
   }
 
   /**
@@ -116,6 +132,9 @@ class PlaylistsService {
     if (!result.rowCount) {
       throw new InvariantError('Lagu gagal dihapus dari playlist');
     }
+
+    // menghapus cache dari server redis
+    await this._cacheService.delete(`playlist:${playlistId}`);
   }
 
   /**
